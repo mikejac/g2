@@ -168,6 +168,16 @@ DEPDIR = $(OBJ)/dep
 
 PLATFORM ?= gShield
 
+ifeq ("$(PLATFORM)","mjShield")
+
+	# This is a due with a Synthetos gShield. We'll use the Due platform, but set defines
+	# for the code to get the pinout right.
+
+	BASE_PLATFORM=due
+	DEVICE_DEFINES += MOTATE_BOARD="gShield" SETTINGS_FILE=${SETTINGS_FILE}
+
+endif
+
 ifeq ("$(PLATFORM)","gShield")
 
 	# This is a due with a Synthetos gShield. We'll use the Due platform, but set defines
@@ -508,6 +518,8 @@ $(OUTPUT_BIN).elf: MKTOOLS $(ALL_C_OBJECTS) $(ALL_CXX_OBJECTS) $(ALL_ASM_OBJECTS
 	$(QUIET)$(NM) "$(OUTPUT_BIN).elf" >"$(OUTPUT_BIN).elf.txt"
 	@echo "--- SIZE INFO ---"
 	$(QUIET)$(SIZE) "$(OUTPUT_BIN).elf"
+	@echo $(START_BOLD)"Making binary $(OUTPUT_BIN).bin" $(END_BOLD)
+	$(QUIET)$(OBJCOPY) -O binary "$(OUTPUT_BIN).elf" "$(OUTPUT_BIN).bin"
 
 $(OUTPUT_BIN).bin: $(OUTPUT_BIN).elf
 	@echo $(START_BOLD)"Making binary $(OUTPUT_BIN).bin" $(END_BOLD)
